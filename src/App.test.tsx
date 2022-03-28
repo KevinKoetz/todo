@@ -61,7 +61,10 @@ describe("App should,", () => {
     const doneButton = await screen.findByRole("button", { name: /erledigt/i });
     await userEvent.click(doneButton);
     const todo = await screen.findByText(titel);
-    expect(todo).toHaveStyle("text-decoration: line-through;");
+
+    expect(getComputedStyle(todo)).toMatchObject({
+      textDecoration: "line-through",
+    });
   });
 
   test("display only the open To-Dos.", async () => {
@@ -108,7 +111,7 @@ describe("App should,", () => {
     await userEvent.click(createButton);
 
     const accordionButton = await screen.findByRole("button", {
-      name: /zeige erledigte/i,
+      name: /erledigte to-dos/i,
     });
 
     expect(accordionButton).toBeInTheDocument();
@@ -134,11 +137,11 @@ describe("App should,", () => {
 
     const closed = await screen.findByText(closedTodoText);
     const accordionButton = await screen.findByRole("button", {
-      name: /zeige erledigte/i,
+      name: /erledigte to-dos/i,
     });
 
     expect(closed).not.toBeVisible();
-    await userEvent.click(accordionButton)
+    await userEvent.click(accordionButton);
     expect(closed).toBeVisible();
   });
 
@@ -161,17 +164,26 @@ describe("App should,", () => {
     await userEvent.click(createButton);
 
     const todos = localStorage.getItem("todos");
-    expect(todos).toBeDefined()
-    if(!todos) throw Error("todo is not defined.")
+    expect(todos).toBeDefined();
+    if (!todos) throw Error("todo is not defined.");
 
-    expect(JSON.parse(todos)).toMatchObject([{titel: openTodoText, open: true},{titel: closedTodoText, open: false}])
+    const parsedTodos = JSON.parse(todos)
+    if(!Array.isArray(parsedTodos)) throw new Error("Expecting parsedTodos to be an Array.")
+    expect(parsedTodos.find(todo => todo.titel === openTodoText)).toBeDefined()
+    expect(parsedTodos.find(todo => todo.titel === closedTodoText)).toBeDefined()
   });
 
   test("load the To-Dos from local Storage.", async () => {
     const openTodoText = "Open.";
     const closedTodoText = "Closed.";
 
-    localStorage.setItem("todos", JSON.stringify([{titel: openTodoText, open: true},{titel: closedTodoText, open: false}]))
+    localStorage.setItem(
+      "todos",
+      JSON.stringify([
+        { id: 0, titel: openTodoText, open: true },
+        { id: 1, titel: closedTodoText, open: false },
+      ])
+    );
 
     render(<App />);
     const open = await screen.findByText(openTodoText);
