@@ -3,16 +3,19 @@ import AddIcon from "@mui/icons-material/Add";
 import { useState } from "react";
 
 interface NewTodoProps {
-  onCreate: (titel: string) => void;
+  /**
+   * Component calls on Create with the new title of the Todo
+   */
+  onCreate: (title: string) => void;
 }
 
 function NewTodo({ onCreate }: NewTodoProps) {
-  const [newTodoTitel, setNewTodoTitel] = useState("");
+  const [newTodoTitle, setNewTodoTitle] = useState("");
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
-    onCreate(newTodoTitel);
-    setNewTodoTitel("");
+    onCreate(newTodoTitle);
+    setNewTodoTitle("");
   };
 
   return (
@@ -32,8 +35,8 @@ function NewTodo({ onCreate }: NewTodoProps) {
         placeholder="Ich muss noch..."
         required
         label="Titel"
-        value={newTodoTitel}
-        onChange={(e) => setNewTodoTitel(e.target.value)}
+        value={newTodoTitle}
+        onChange={(e) => setNewTodoTitle(e.target.value)}
       />
     </form>
   );

@@ -1,5 +1,12 @@
 import { useEffect, useState } from "react";
 
+
+/**
+ * 
+ * @param initialValue Initial Value of the state, this is only used if localStorage does not contain the key.
+ * @param key Key under which the value is to be stored in localStorage
+ * @returns [state, dispatcher]
+ */
 const usePersistedState = <T>(
   initialValue: T,
   key: string
@@ -15,7 +22,6 @@ const usePersistedState = <T>(
 
   //Save State to Local Storage on change
   useEffect(() => {
-    if (state === initialValue) return;
     localStorage.setItem(key, JSON.stringify(state));
   }, [state, key, initialValue]);
 

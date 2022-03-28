@@ -169,8 +169,8 @@ describe("App should,", () => {
 
     const parsedTodos = JSON.parse(todos)
     if(!Array.isArray(parsedTodos)) throw new Error("Expecting parsedTodos to be an Array.")
-    expect(parsedTodos.find(todo => todo.titel === openTodoText)).toBeDefined()
-    expect(parsedTodos.find(todo => todo.titel === closedTodoText)).toBeDefined()
+    expect(parsedTodos.find(todo => todo.title === openTodoText)).toBeDefined()
+    expect(parsedTodos.find(todo => todo.title === closedTodoText)).toBeDefined()
   });
 
   test("load the To-Dos from local Storage.", async () => {
@@ -180,8 +180,8 @@ describe("App should,", () => {
     localStorage.setItem(
       "todos",
       JSON.stringify([
-        { id: 0, titel: openTodoText, open: true },
-        { id: 1, titel: closedTodoText, open: false },
+        { id: 0, title: openTodoText, open: true },
+        { id: 1, title: closedTodoText, open: false },
       ])
     );
 
