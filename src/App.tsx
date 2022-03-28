@@ -6,45 +6,11 @@ import {
   Paper,
   Box,
 } from "@mui/material";
-import usePersistedState from "./hooks/usePersistedState";
+import useTodos from "./hooks/useTodos";
 
-interface ITodo {
-  id: number;
-  title: string;
-  open: boolean;
-}
 
-function App() {
-  const [todos, setTodos] = usePersistedState<ITodo[]>([], "todos");
-
-  const handleCloseTodo = (id: number) => () => {
-    setTodos((oldTodos) => {
-      return oldTodos.map((todo) =>
-        todo.id === id ? Object.assign(todo, { open: false }) : todo
-      );
-    });
-  };
-
-  const handleReopenTodo = (id: number) => () => {
-    setTodos((oldTodos) => {
-      return oldTodos.map((todo) =>
-        todo.id === id ? Object.assign(todo, { open: true }) : todo
-      );
-    });
-  };
-
-  const handleDeleteTodo = (id: number) => () => {
-    setTodos((oldTodos) => {
-      return oldTodos.filter((todo) => todo.id !== id);
-    });
-  };
-
-  const handleCreateTodo = (title: string) => {
-    setTodos((oldTodos) => [
-      ...oldTodos,
-      { title, open: true, id: determineNewId(oldTodos) },
-    ]);
-  };
+function App() { 
+  const {todos, handleCreate, handleClose, handleReopen, handleDelete} = useTodos()
 
   const openTodos = todos
     .filter((todo) => todo.open)
@@ -52,8 +18,8 @@ function App() {
       <Todo
         key={todo.id}
         {...todo}
-        onClose={handleCloseTodo(todo.id)}
-        onDelete={handleDeleteTodo(todo.id)}
+        onClose={handleClose(todo.id)}
+        onDelete={handleDelete(todo.id)}
       />
     ));
 
@@ -63,8 +29,8 @@ function App() {
       <Todo
         key={todo.id}
         {...todo}
-        onReopen={handleReopenTodo(todo.id)}
-        onDelete={handleDeleteTodo(todo.id)}
+        onReopen={handleReopen(todo.id)}
+        onDelete={handleDelete(todo.id)}
       />
     ));
 
@@ -83,7 +49,7 @@ function App() {
           To-Do App
         </Typography>
 
-        <NewTodo onCreate={handleCreateTodo} />
+        <NewTodo onCreate={handleCreate} />
 
         {todos.length > 0 ? (
           <CollapsibleList
@@ -107,10 +73,6 @@ function App() {
       </Paper>
     </Box>
   );
-}
-
-function determineNewId(todos: ITodo[]): number {
-  return todos.reduce((id, todo) => (todo.id < id ? id : todo.id + 1), 0);
 }
 
 export default App;
